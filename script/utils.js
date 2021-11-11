@@ -1,12 +1,17 @@
 // Some helpers for us to use
 
-export default (() => ({
-    sel: id => {
-        const items = [...document.querySelectorAll(id)];
-        if (items.length <= 1) {
-            return items[0];
-        } else if (items > 1) {
-            return items;
-        } 
+const sel = id => {
+    const items = [...document.querySelectorAll(id)];
+    if (items.length == 0) {
+        return null;
+    } else if (items > 1) {
+        return items;
+    }  else {
+        return items[0];
     }
-}))();
+}
+
+
+export {
+    sel
+}

@@ -12,5 +12,5 @@ A quick starter repo for THREE.js experiments. (WIP)
 ## Quick Start
 
 ```bash
-parcel index.html
+npm run dev
 ```
