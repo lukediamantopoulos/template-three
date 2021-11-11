@@ -7,7 +7,7 @@ import fragment from './shaders/fragment.glsl';
 
 import img from '../assets/type.png';
     
-const Sketch = ( element => {
+const Sketch = (() => {
 
     let scene, camera, renderer, canvas, screen, controls, clock;
     let material, geometry, mesh;
@@ -111,4 +111,4 @@ const Sketch = ( element => {
     }
 })();
 
-window.addEventListener("load", () => Sketch.init("#gl-container"));
+window.addEventListener('load', () => Sketch.init('#gl-container'));

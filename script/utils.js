@@ -6,7 +6,7 @@ const sel = id => {
         return null;
     } else if (items > 1) {
         return items;
-    }  else {
+    } else {
         return items[0];
     }
 }
