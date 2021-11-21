@@ -1,7 +1,7 @@
 // Some helpers for us to use
 
-const sel = id => {
-    const items = [...document.querySelectorAll(id)];
+const sel = selector => {
+    const items = [...document.querySelectorAll(selector)];
     if (items.length == 0) {
         return null;
     } else if (items > 1) {

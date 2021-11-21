@@ -16,5 +16,8 @@
         "quotes": ["error", "single"],
         "no-multi-spaces": ["error"],
         "no-console": "off"
-    }
+    },
+    "ignorePatterns": [
+        "bundler/"
+    ],
 }
