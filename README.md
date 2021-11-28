@@ -4,10 +4,18 @@ A quick starter repo for THREE.js experiments. (WIP)
 
 ## Includes
 
+-   Package manager animation
+-   Global store for event handling
+-   Shader support
+-   GUI for refining
+
+## Packages
+
 -   Webpack
 -   Three.js
 -   Sass
 -   Glslify
+-   GSAP
 
 ## Quick Start
 
@@ -15,6 +23,10 @@ A quick starter repo for THREE.js experiments. (WIP)
 npm run dev
 ```
 
-## Next Up
+## Debug
 
--   Create global 'Store' to handle events
+Include '#debug' in the url to initiate the GUI
+
+## To do
+
+Separate loading animation into its own component (resource manager). 

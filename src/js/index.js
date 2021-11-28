@@ -1,37 +1,32 @@
-// Style
-import '../css/index.scss'
 
-// Three
+import '../css/index.scss'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-
-// Store
-import { Store, events } from '../js/store'
-
-// Utils
 import { sel } from './utils'
-import * as dat from 'lil-gui'
+import sources from './assets/_sources'
 
-// Shaders
-import vertex from './shaders/vertex.glsl'
-import fragment from './shaders/fragment.glsl'
+import { Store, events } from './store'
+import { Settings, ResourceManager, LoadingAnimation } from './components'
 
-// Static
-import img from '../../static/type.png'
+import vertex from './shaders/_vertex.glsl'
+import fragment from './shaders/_fragment.glsl'
 
 class Experience {
 
     constructor(element) {
-        
+
 		this.canvas = element
 		this.scene = new THREE.Scene()
 
+        window.experience = this
+
 		this.screen = {
             w: this.canvas.offsetWidth,
-		    h: this.canvas.offsetHeight
+            h: this.canvas.offsetHeight
 		}
 
-        this.debug = false
+        this.resources = new ResourceManager(sources)
+        this.loadingAnimation = new LoadingAnimation()
 
         this.renderer = new THREE.WebGLRenderer()
         this.renderer.setPixelRatio(window.devicePixelRatio)
@@ -40,10 +35,10 @@ class Experience {
         this.renderer.outputEncoding = THREE.sRGBEncoding
 
         this.camera = new THREE.PerspectiveCamera(
-			70, // field of view
-			this.screen.w / this.screen.h, // ratio
-			0.001, // near
-			1000 // far
+            70, // field of view
+            this.screen.w / this.screen.h, // ratio
+            0.001, // near
+            1000 // far
 		)
 		this.camera.position.set(0, 0, 8)
 
@@ -53,17 +48,13 @@ class Experience {
 		this.controls.enableDamping = true
 		this.controls.update()
 
+        this.settings = new Settings()
+
         this.textures = []
 
         this.canvas.appendChild(this.renderer.domElement)
 
-        this.init([
-          
-            this.events,
-            this.settings,
-            this.playground,
-            this.render
-        ])
+        this.events()
 	}
 
     init(callbacks) {
@@ -71,21 +62,25 @@ class Experience {
     }
 
     playground() {
-        this.texture = new THREE.TextureLoader().load(img, (texture) => {
-			this.texture.minFilter = THREE.NearestFilter
-		})
-		this.geometry = new THREE.TorusGeometry(3, 1, 100, 100)
-		this.material = new THREE.ShaderMaterial({
+        this.torus = {}
+        this.torus.texture = this.resources.items.welcome
+        this.torus.texture.minFilter = THREE.NearestFilter
+
+		this.torus.geometry = new THREE.TorusGeometry(3, 1, 100, 100)
+
+		this.torus.material = new THREE.ShaderMaterial({
 			uniforms: {
-				uTexture: { value: this.texture },
-				uTime: { type: "f", value: 1.0 },
+				uTexture: { value: this.torus.texture },
+				uTime: { type: 'f', value: 1.0 },
 			},
 			transparent: true,
 			vertexShader: vertex,
 			fragmentShader: fragment,
 		})
-		this.mesh = new THREE.Mesh(this.geometry, this.material)
-		this.scene.add(this.mesh)
+
+		this.torus.mesh = new THREE.Mesh(this.torus.geometry, this.torus.material)
+        this.torus.mesh.name = 'Welcome Torus'
+		this.scene.add(this.torus.mesh)
     }
 
     events() {
@@ -97,16 +92,16 @@ class Experience {
         })
 
         Store.subscribe(events.resize, this.resize.bind(this))
-    }
-
-    settings() {
-        if (this.debug === false) return
-        this.gui = new dat.GUI()
-        this.gui.add(this.camera.position, 'z').min(0).max(20).step(.05)
+        Store.subscribe(events.assetsReady, () => {
+            console.log('RECIEVING FINISHED')
+            this.init([
+                this.playground, 
+                this.render
+            ])
+        })
     }
 
     resize({ payload }) {
-
         this.screen.w = payload.w
         this.screen.h = payload.h
 
@@ -117,7 +112,7 @@ class Experience {
 
     update() {
         const time = this.clock.getElapsedTime()
-        this.material.uniforms.uTime.value = time
+        this.torus.material.uniforms.uTime.value = time
     }
 
     render() {
@@ -129,4 +124,4 @@ class Experience {
 
 }
 
-window.addEventListener("load", () => new Experience(sel("#gl-container")))
+window.addEventListener('load', () => new Experience(sel('#gl-container')))
