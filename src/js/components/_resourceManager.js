@@ -21,7 +21,6 @@ export default class ResourceManager {
 	}
 
 	onComplete() {
-		console.log('FINISHED')
 		Store.emit(events.assetsReady)
 	}
 

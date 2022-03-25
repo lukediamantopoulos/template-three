@@ -19,6 +19,7 @@ class Experience {
 		this.scene = new THREE.Scene()
 
         window.experience = this
+        this.debug = window.location.hash === "#debug"
 
 		this.screen = {
             w: this.canvas.offsetWidth,
@@ -57,8 +58,9 @@ class Experience {
         this.events()
 	}
 
-    init(callbacks) {
-        callbacks.forEach(cb => cb.call(this))
+    init() {
+       this.playground()
+       this.render()
     }
 
     playground() {
@@ -93,11 +95,7 @@ class Experience {
 
         Store.subscribe(events.resize, this.resize.bind(this))
         Store.subscribe(events.assetsReady, () => {
-            console.log('RECIEVING FINISHED')
-            this.init([
-                this.playground, 
-                this.render
-            ])
+            this.init()
         })
     }
 
@@ -112,6 +110,7 @@ class Experience {
 
     update() {
         const time = this.clock.getElapsedTime()
+        this.debug && this.settings.stats.update()
         this.torus.material.uniforms.uTime.value = time
     }
 

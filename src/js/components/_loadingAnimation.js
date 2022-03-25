@@ -7,7 +7,6 @@ export default class LoadingAnimation {
 
 		this.loadingBar = sel('.loader')
 		this.canvas = this.experience.canvas
-        console.log('INITING LOADING ANIMATION')
 		this.events()
 	}
 
@@ -18,13 +17,11 @@ export default class LoadingAnimation {
 
     onProgress(data) {
         const { loading, loaded } = data.payload
-        console.log( loading, loaded)
         this.progress = loading / loaded
 		this.loadingBar.style.transform = `scaleX(${this.progress})`
     }
 
     onReady(data) {
-        console.log(data)
         setTimeout(() => {
 			this.canvas.classList.remove("hidden")
 			this.loadingBar.classList.add("hidden")
